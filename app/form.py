@@ -30,3 +30,6 @@ class UserForm(forms.Form):
 
 class matchlistForm(forms.Form):
 	num = forms.IntegerField()
+
+class roomlistForm(forms.Form):
+	num = forms.IntegerField()

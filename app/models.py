@@ -59,6 +59,9 @@ class Room(models.Model):
 	#比赛房间创建者id,关联Room表查询更多信息
 	creatorid= models.IntegerField()
 	creatorname = models.CharField(max_length=50,default='xxx')
+
+	#创建时间
+	createtime = models.TimeField(default=timezone.now())
 	#邀请码
 	code = models.IntegerField()
 	start = models.DateTimeField()

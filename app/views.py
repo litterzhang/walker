@@ -168,14 +168,20 @@ def matchlist(request):
         uf = matchlistForm(request.POST)
         if uf.is_valid():
             num = uf.cleaned_data['num']
-            json_data = serializers.serialize("json",Match.objects.all()[5*num:5*(num+1)-1].order_by("uploadtime"))
-            return HttpResponse(json_data, content_type="application/json")
+            json_data = serializers.serialize("json",Match.objects.all().order_by("-uploadtime")[5*num:5*(num+1)-1:1])
+        return HttpResponse(json_data, content_type="application/json")
+    else:
+        uf = matchlistForm()
+    return render_to_response('matchlist.html', {'uf': uf}, context_instance=RequestContext(request))
 
 #获取房间列表
 def roomlist(request):
     if request.method == "POST":
-        uf = matchlistForm(request.POST)
+        uf = roomlistForm(request.POST)
         if uf.is_valid():
             num = uf.cleaned_data['num']
-            json_data = serializers.serialize("json", Room.objects.all()[5 * num:5 * (num + 1) - 1].order_by("uploadtime"))
-            return HttpResponse(json_data, content_type="application/json")
+            json_data = serializers.serialize("json", Room.objects.all().order_by("-createtime")[5 * num:5 * (num + 1) - 1:1])
+        return HttpResponse(json_data, content_type="application/json")
+    else:
+        uf = roomlistForm()
+    return render_to_response('roomlist.html', {'uf': uf}, context_instance=RequestContext(request))
