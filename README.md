@@ -59,3 +59,19 @@
 	active_code: 输入验证码
 	返回：
 	{'success': True/False, 'msg':'激活成功！/激活失败！'}
+	
+
+### 上传地图信息
+	HTTP POST
+	地址：
+	/app/uploadmap
+	说明：
+	传到服务器的参数中包含地图的信息
+	参数：
+	name: 地图名称
+	cover：地图图片
+	creatorid：地图上传人
+	ispubic：是否公开
+	place：比赛地点
+	返回：
+	{'success': True/False, 'msg':'上传成功！/上传失败！','mapid':'地图id'}
