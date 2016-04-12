@@ -33,6 +33,8 @@ class Match(models.Model):
 	#是否公开
 	ispubic = models.BooleanField()
 	place = models.CharField(max_length=50, default="比赛地点", editable=False)
+	#上传时间
+	uploadtime = models.TimeField()
 
 #比赛标记点
 class Marker(models.Model):
