@@ -1,5 +1,7 @@
 from django.db import models
+from django.utils import timezone
 from django.core.validators import EmailValidator, MinLengthValidator
+
 # Create your models here.
 
 #应用主要逻辑和功能
@@ -34,7 +36,7 @@ class Match(models.Model):
 	ispubic = models.BooleanField()
 	place = models.CharField(max_length=50, default="比赛地点", editable=False)
 	#上传时间
-	uploadtime = models.TimeField()
+	uploadtime = models.TimeField(default=timezone.now())
 
 #比赛标记点
 class Marker(models.Model):
@@ -55,7 +57,8 @@ class Room(models.Model):
 	#比赛地图id,关联比赛地图表查询更多信息
 	match = models.ForeignKey(Match)
 	#比赛房间创建者id,关联Room表查询更多信息
-	createrid= models.IntegerField()
+	creatorid= models.IntegerField()
+	creatorname = models.CharField()
 	#邀请码
 	code = models.IntegerField()
 	start = models.DateTimeField()
