@@ -7,9 +7,11 @@ from django.core.mail import send_mail
 import uuid
 import time
 
-from .models import User
-from .form import UserRegisterForm
-from .form import UserLoginForm
+# from .models import User
+# from .form import UserRegisterForm
+# from .form import UserLoginForm
+from .models import *
+from .form import *
 
 #发送验证码到邮箱
 def send_active_code(active_code, email):
@@ -137,3 +139,24 @@ def logout(req):
 	rs = {'success': True, 'msg': '登出成功！', }
 	del req.session['email']
 	return JsonResponse(rs)
+
+def upload(request):
+    if request.method == "POST":
+        uf = UserForm(request.POST,request.FILES)
+        if uf.is_valid():
+            username = uf.cleaned_data['username']
+            headImg = uf.cleaned_data['headImg']
+            test=Test()
+            test.username=username
+            test.headImg=headImg
+            test.save()
+
+            rs={'success': True, 'msg': '上传成功！','mapurl':test.headImg}
+        else:
+            rs = {'success': True, 'msg': '上传失败！',}
+            # return HttpResponse('upload ok!')
+    else:
+        uf = UserForm()
+        rs = {'success': True, 'msg': '上传失败！',}
+    return JsonResponse(rs)
+    # return render_to_response('upload.html',{'uf':uf})

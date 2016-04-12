@@ -8,4 +8,5 @@ urlpatterns = [
 	url(r'^send_code/$', views.send_code, name='send_code'),
 	url(r'^active/$', views.active, name='active'),
 	url(r'^index/$', views.index, name='index'),
+	url(r'^upload/$', views.upload, name='upload'),
 ]

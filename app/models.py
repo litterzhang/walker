@@ -86,6 +86,22 @@ class Room_User_Marker(models.Model):
 	#图片上传时间
 	uptime = models.DateTimeField()
 
+import os
+import time
+def content_file_name(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s_%s.%s" % (instance.username, time.time(), ext)
+    mydir ='./app/static/' + "%s" % instance.username
+    return os.path.join(mydir, filename)
+
+#测试的数据库表
+class Test(models.Model):
+    username = models.CharField(max_length = 30)
+    headImg = models.FileField(upload_to = content_file_name)
+
+    def __unicode__(self):
+        return self.username
+
 
 
 

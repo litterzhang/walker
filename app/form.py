@@ -23,3 +23,7 @@ class UserRegisterForm(ModelForm):
 class UserLoginForm(forms.Form):
 	email = forms.CharField(max_length=200, validators=[EmailValidator(message='邮箱格式不正确！'), ])
 	password = forms.CharField(max_length=20, validators=[MinLengthValidator(8, message='密码长度在8-20之间'), ])
+
+class UserForm(forms.Form):
+    username = forms.CharField()
+    headImg = forms.FileField()
