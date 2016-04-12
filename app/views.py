@@ -155,8 +155,7 @@ def upload(request):
         else:
             rs = {'success': True, 'msg': '上传失败！',}
             # return HttpResponse('upload ok!')
+        return JsonResponse(rs)
     else:
         uf = UserForm()
-        rs = {'success': True, 'msg': '上传失败！',}
-    return JsonResponse(rs)
-    # return render_to_response('upload.html',{'uf':uf})
+    return render_to_response('upload.html',{'uf':uf})
