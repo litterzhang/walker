@@ -58,7 +58,7 @@ class Room(models.Model):
 	match = models.ForeignKey(Match)
 	#比赛房间创建者id,关联Room表查询更多信息
 	creatorid= models.IntegerField()
-	creatorname = models.CharField()
+	creatorname = models.CharField(max_length=50,default='xxx')
 	#邀请码
 	code = models.IntegerField()
 	start = models.DateTimeField()
