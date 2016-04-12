@@ -90,7 +90,8 @@ def login(req):
 			else:
 				#登录失败
 				rs = {'success': False, 'msg': '用户名或密码不正确！'}
-
+		else:
+			rs = {'success': False, 'msg': uf.errors}
 		return JsonResponse(rs)
 	else:
 		uf = UserLoginForm()
