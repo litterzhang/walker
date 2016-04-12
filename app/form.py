@@ -27,3 +27,6 @@ class UserLoginForm(forms.Form):
 class UserForm(forms.Form):
     username = forms.CharField()
     headImg = forms.FileField()
+
+class matchlistForm(forms.Form):
+	num = forms.IntegerField()

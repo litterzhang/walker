@@ -140,6 +140,7 @@ def logout(req):
 	del req.session['email']
 	return JsonResponse(rs)
 
+#上传图片并返回图片地址
 def upload(request):
     if request.method == "POST":
         uf = UserForm(request.POST,request.FILES)
@@ -159,3 +160,22 @@ def upload(request):
     else:
         uf = UserForm()
     return render_to_response('upload.html',{'uf':uf})
+
+#获取比赛地图列表
+from django.core import serializers
+def matchlist(request):
+    if request.method == "POST":
+        uf = matchlistForm(request.POST)
+        if uf.is_valid():
+            num = uf.cleaned_data['num']
+            json_data = serializers.serialize("json",Match.objects.all()[5*num:5*(num+1)-1].order_by("uploadtime"))
+            return HttpResponse(json_data, content_type="application/json")
+
+#获取房间列表
+def roomlist(request):
+    if request.method == "POST":
+        uf = matchlistForm(request.POST)
+        if uf.is_valid():
+            num = uf.cleaned_data['num']
+            json_data = serializers.serialize("json", Room.objects.all()[5 * num:5 * (num + 1) - 1].order_by("uploadtime"))
+            return HttpResponse(json_data, content_type="application/json")
