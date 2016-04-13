@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 
 import uuid
 import time
+import json
 
 # from .models import User
 # from .form import UserRegisterForm
@@ -140,6 +141,43 @@ def logout(req):
 	rs = {'success': True, 'msg': '登出成功！', }
 	del req.session['email']
 	return JsonResponse(rs)
+
+#创建比赛
+@check_login
+def match_new(req):
+	if req.method == 'POST':
+		uf = MatchNewForm(req.POST)
+		if uf.is_valid():
+			email = req.session['email']
+			user = User.objects.get(email=email)
+
+			name = uf.cleaned_data['name']
+			cover = uf.cleaned_data['cover']
+			ispubic = uf.cleaned_data['ispubic']
+			place = uf.cleaned_data['place']
+			json_data = uf.cleaned_data['json']
+			markers = None
+			try:
+				markers = json.loads(json_data)
+			except Exception as e:
+				rs = {'success': False, 'msg': '标记点格式不正确！'}
+
+			match = Match.objects.create(name=name, cover=cover, ispubic=ispubic, place=place, creatorid=user.id)
+			for marker in markers:
+				order = marker.get('order', None)
+				img = marker.get('marker', None)
+				lon = marker.get('lon', None)
+				lot = marker.get('lot', None)
+
+				marker_new = Marker.objects.create(match=match.id, order=order, marker=img, lon=lon, lot=lot)
+
+			rs = {'success': True, 'msg': '新建比赛成功'}
+		else:
+			rs = {'success': False, 'msg': uf.errors}
+		return JsonResponse(rs)
+	else:
+		uf = MatchNewForm()
+	return render_to_response('test.html', {'uf':uf}, context_instance=RequestContext(req))
 
 #上传图片并返回图片地址
 def upload(request):

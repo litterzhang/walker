@@ -27,16 +27,16 @@ class User(models.Model):
 
 #比赛地图表
 class Match(models.Model):
-	name = models.CharField(max_length=50, default="比赛地图", editable=False)
+	name = models.CharField(max_length=50, default='比赛地图', editable=False)
 	#封面（宣传图）
 	cover = models.CharField(max_length=200, default='xxx.jpg', editable=False)
 	#比赛地图创建者id，关联User表查询更多信息
 	creatorid = models.IntegerField()
 	#是否公开
 	ispubic = models.BooleanField()
-	place = models.CharField(max_length=50, default="比赛地点", editable=False)
+	place = models.CharField(max_length=50, default='比赛地点', editable=False)
 	#上传时间
-	uploadtime = models.TimeField(default=timezone.now())
+	uploadtime = models.TimeField(default=timezone.now, blank=True)
 
 #比赛标记点
 class Marker(models.Model):
@@ -53,7 +53,7 @@ class Marker(models.Model):
 
 #比赛房间表（选择比赛地图后创建房间）
 class Room(models.Model):
-	name = models.CharField(max_length=50, default="比赛房间", editable=False)
+	name = models.CharField(max_length=50, default='比赛房间', editable=False)
 	#比赛地图id,关联比赛地图表查询更多信息
 	match = models.ForeignKey(Match)
 	#比赛房间创建者id,关联Room表查询更多信息
@@ -61,7 +61,7 @@ class Room(models.Model):
 	creatorname = models.CharField(max_length=50,default='xxx')
 
 	#创建时间
-	createtime = models.TimeField(default=timezone.now())
+	createtime = models.TimeField(default=timezone.now)
 	#邀请码
 	code = models.IntegerField()
 	start = models.DateTimeField()
@@ -98,8 +98,8 @@ import os
 import time
 def content_file_name(instance, filename):
     ext = filename.split('.')[-1]
-    filename = "%s_%s.%s" % (instance.username, time.time(), ext)
-    mydir ='./app/static/' + "%s" % instance.username
+    filename = '%s_%s.%s' % (instance.username, time.time(), ext)
+    mydir ='./app/static/' + '%s' % instance.username
     return os.path.join(mydir, filename)
 
 #测试的数据库表
