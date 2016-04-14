@@ -98,8 +98,8 @@ import os
 import time
 def content_file_name(instance, filename):
     ext = filename.split('.')[-1]
-    filename = "%s_%s.%s" % (instance.username, time.time(), ext)
-    mydir ='./app/static/' + "%s" % instance.username
+    filename = "%s.%s" % (str(time.time()), ext)
+    mydir ='./app/static/'
     return os.path.join(mydir, filename)
 
 #测试的数据库表

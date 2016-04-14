@@ -25,7 +25,6 @@ class UserLoginForm(forms.Form):
 	password = forms.CharField(max_length=20, validators=[MinLengthValidator(8, message='密码长度在8-20之间'), ])
 
 class UserForm(forms.Form):
-    username = forms.CharField()
     headImg = forms.FileField()
 
 class matchlistForm(forms.Form):
