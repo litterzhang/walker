@@ -104,11 +104,7 @@ def content_file_name(instance, filename):
 
 #测试的数据库表
 class Test(models.Model):
-    username = models.CharField(max_length = 30)
     headImg = models.FileField(upload_to = content_file_name)
-
-    def __unicode__(self):
-        return self.username
 
 
 
