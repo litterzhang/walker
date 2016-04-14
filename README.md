@@ -64,7 +64,7 @@
 ### 上传地图信息
 	HTTP POST
 	地址：
-	/app/uploadmap
+	/app/upload
 	说明：
 	传到服务器的参数中包含地图的信息
 	参数：
@@ -74,4 +74,4 @@
 	ispubic：是否公开
 	place：比赛地点
 	返回：
-	{'success': True/False, 'msg':'上传成功！/上传失败！','mapid':'地图id'}
+	{'success': True/False, 'msg':'上传成功！/上传失败！','mapurl':'地图地址'}

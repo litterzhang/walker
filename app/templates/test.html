@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta content="text/html" charset="utf-8"/>
+	<title>测试页面</title>
+</head>
+<body>
+<form method="post" enctype="multipart/form-data" >
+	{% csrf_token %}
+	{{uf.as_p}}
+	<input type="submit" value="ok"/>
+</form>
+</body>
+</html>
