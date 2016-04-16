@@ -61,17 +61,25 @@
 	{'success': True/False, 'msg':'激活成功！/激活失败！'}
 	
 
-### 上传地图信息
+### 上传图片
 	HTTP POST
 	地址：
 	/app/upload
 	说明：
 	传到服务器的参数中包含地图的信息
-	参数：
-	name: 地图名称
-	cover：地图图片
-	creatorid：地图上传人
-	ispubic：是否公开
-	place：比赛地点
 	返回：
-	{'success': True/False, 'msg':'上传成功！/上传失败！','mapurl':'地图地址'}
+	{'success': True/False, 'msg':'上传成功！/上传失败！','mapurl':'图片地址'}
+
+### 上传比赛地图
+	HTTP POST
+	地址：
+	/app/match_new
+	说明:
+	cookies中包含email，否则为未登录，无法创建比赛
+	参数：
+	name: 比赛名称
+	cover: 比赛封面图, url
+	ispublic: 是否公开
+	place: 比赛地点
+	返回：
+	{'success': True/False, 'msg':'上传成功！/上传失败！'}
