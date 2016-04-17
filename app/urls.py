@@ -13,4 +13,5 @@ urlpatterns = [
 	url(r'^matchlist/$', views.matchlist, name='matchlist'),
 	url(r'^roomlist/$', views.roomlist, name='roomlist'),
 	url(r'^room_new/$', views.room_new, name='room_new'),
+	url(r'^room_join/$', views.room_join, name='room_join'),
 ]

@@ -101,3 +101,31 @@
 	num: 0代表返回前5个，1代表返回第5到9个，2代表返回10到14个
 	返回：
 	{id,name,match,creatorid,creatorname,createtime,code,start,end,detail 这些都是json里的参数}
+
+### 新建房间
+	HTTP POST
+	地址：
+	/app/room_new
+	说明:
+	cookies中包含email，否则为未登录，无法创建比赛
+	参数：
+	'name': 房间名
+	'match': 比赛地图, id
+	'start': 比赛开始时间, datetime
+	'end': 比赛结束时间, datetime
+	'code': 邀请码，int
+	'detail': 房间详情
+	返回：
+	{'success': True/False, 'msg':'上传成功！/上传失败！'}
+
+### 加入房间
+	HTTP POST
+	地址：
+	/app/room_join
+	说明:
+	cookies中包含email，否则为未登录，无法创建比赛
+	参数：
+	'room': 房间id
+	'code': 邀请码
+	返回：
+	{'success': True/False, 'msg':'上传成功！/上传失败！'}

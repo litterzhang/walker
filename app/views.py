@@ -164,12 +164,14 @@ def match_new(req):
 
 			match = Match.objects.create(name=name, cover=cover, ispublic=ispublic, place=place, creatorid=user.id)
 			for marker in markers:
+				name = marker.get('name', None)
 				order = marker.get('order', None)
 				img = marker.get('marker', None)
 				lon = marker.get('lon', 0)
 				lat = marker.get('lat', 0)
+				detail = marker.get('detail', None)
 
-				marker_new = Marker.objects.create(match=match, order=order, marker=img, lon=lon, lat=lat)
+				marker_new = Marker.objects.create(name=name, match=match, order=order, marker=img, lon=lon, lat=lat, detail=detail)
 
 			rs = {'success': True, 'msg': '新建比赛成功'}
 		else:
@@ -190,7 +192,7 @@ def upload(request):
 			# test.username=username
 			test.headImg=headImg
 			test.save()
-			rs={'success': True, 'msg': '上传成功！','mapurl':json.dumps(str(test.headImg))}
+			rs={'success': True, 'msg': '上传成功！','mapurl':json.dumps(str(test.headImg)[4:])}
 			# rs=json.dump(rs)
 		else:
 			rs = {'success': True, 'msg': '上传失败！'}
@@ -202,13 +204,28 @@ def upload(request):
 
 #获取比赛地图列表
 from django.core import serializers
+@check_login
 def matchlist(request):
 	if request.method == "POST":
 		uf = matchlistForm(request.POST)
 		if uf.is_valid():
 			num = uf.cleaned_data['num']
-			json_data = serializers.serialize("json",Match.objects.all().order_by("-uploadtime")[5*num:5*(num+1)-1:1])
-		return HttpResponse(json_data, content_type="application/json")
+			matchs = Match.objects.all().order_by('-uploadtime')[5*num:5*(num+1)-1:1]
+			
+			matchs_r = list()
+			for match in matchs:
+				match_r = {'id': match.id, 'name': match.name, 'cover': match.cover, 'creatorid': match.creatorid, 'ispublic': match.ispublic, 'place': match.place}
+				markers = Marker.objects.filter(match=match)
+
+				markers_r = list()
+				for marker in markers:
+					markers_r.append({'id': marker.id, 'order': marker.order, 'lon': marker.lon, 'lat': marker.lat, 'marker': marker.marker})
+				match_r['markers'] = markers_r
+				matchs_r.append(match_r)
+			rs = {'success': True, 'msg': '获取成功!', 'json': matchs_r}
+		else:
+			rs = {'success': True, 'msg': uf.errors}
+		return JsonResponse(rs)
 	else:
 		uf = matchlistForm()
 	return render_to_response('matchlist.html', {'uf': uf}, context_instance=RequestContext(request))
@@ -228,7 +245,7 @@ def roomlist(request):
 #创建新的房间
 @check_login
 def room_new(req):
-	if req.method == "POST":
+	if req.method == 'POST':
 		uf = RoomNewForm(req.POST)
 		if uf.is_valid():
 			email = req.session['email']
@@ -250,4 +267,30 @@ def room_new(req):
 
 	else:
 		uf = RoomNewForm()
+	return render_to_response('test.html', {'uf': uf}, context_instance=RequestContext(req))
+
+#加入比赛房间
+@check_login
+def room_join(req):
+	if req.method == 'POST':
+		uf = RoomJoinForm(req.POST)
+
+		if uf.is_valid():
+			email = req.session['email']
+			user = User.objects.get(email=email)
+
+			room = Room.objects.get(id=uf.cleaned_data['room'])
+
+			if room.creatorid==user.id:
+				rs = {'success': False, 'msg': '房间创建者不可以参加比赛'}
+			else:
+				Room_User.objects.create(room=room, user=user)
+
+				rs = {'success': True, 'msg': '加入房间成功'}
+		else:
+			rs = {'success': False, 'msg': uf.errors}
+		return JsonResponse(rs)
+
+	else:
+		uf = RoomJoinForm()
 	return render_to_response('test.html', {'uf': uf}, context_instance=RequestContext(req))

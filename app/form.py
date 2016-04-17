@@ -50,3 +50,24 @@ class RoomNewForm(ModelForm):
 				'required': _('邮箱已被注册！')
 			}
 		}
+
+class RoomJoinForm(forms.Form):
+	code = forms.IntegerField()
+	room = forms.IntegerField()
+
+	def clean(self):
+		cleaned_data = super(RoomJoinForm, self).clean()
+		code_d = cleaned_data.get('code', -1)
+		room_id = cleaned_data.get('room', None)
+
+		if not room_id or not Room.objects.get(id=room_id):
+			self._errors['room'] = self.error_class([u'加入的房间不存在'])
+		else:
+			room_g = Room.objects.get(id=room_id)
+
+			if room_g.code!=code_d:
+				self._errors['code'] = self.error_class([u'邀请码不正确'])
+			else:
+				return cleaned_data
+
+

@@ -41,6 +41,7 @@ class Match(models.Model):
 #比赛标记点
 class Marker(models.Model):
 	#比赛地图id，关联User表查询更多信息
+	name = models.CharField(max_length=50, default='标记点', blank=True)
 	match = models.ForeignKey(Match)
 	#标记点图片
 	marker = models.CharField(max_length=200, default='xxx.jpg', editable=False)
@@ -49,6 +50,8 @@ class Marker(models.Model):
 	#经纬度
 	lon = models.FloatField()
 	lat = models.FloatField()
+	detail = models.CharField(max_length=200, default='标记详情', blank=True)
+
 	
 
 #比赛房间表（选择比赛地图后创建房间）
