@@ -20,7 +20,7 @@ def send_active_code(active_code, email):
 
 #生成验证码
 def gen_active_code(email):
-    return uuid.uuid5(uuid.NAMESPACE_DNS, email+str(time.time())).hex[15:21]
+	return uuid.uuid5(uuid.NAMESPACE_DNS, email+str(time.time())).hex[15:21]
 
 #检查是否登录
 def check_login(f):
@@ -153,7 +153,7 @@ def match_new(req):
 
 			name = uf.cleaned_data['name']
 			cover = uf.cleaned_data['cover']
-			ispubic = uf.cleaned_data['ispubic']
+			ispublic = uf.cleaned_data['ispublic']
 			place = uf.cleaned_data['place']
 			json_data = uf.cleaned_data['json']
 			markers = None
@@ -162,14 +162,14 @@ def match_new(req):
 			except Exception as e:
 				rs = {'success': False, 'msg': '标记点格式不正确！'}
 
-			match = Match.objects.create(name=name, cover=cover, ispubic=ispubic, place=place, creatorid=user.id)
+			match = Match.objects.create(name=name, cover=cover, ispublic=ispublic, place=place, creatorid=user.id)
 			for marker in markers:
 				order = marker.get('order', None)
 				img = marker.get('marker', None)
-				lon = marker.get('lon', None)
-				lot = marker.get('lot', None)
+				lon = marker.get('lon', 0)
+				lat = marker.get('lat', 0)
 
-				marker_new = Marker.objects.create(match=match.id, order=order, marker=img, lon=lon, lot=lot)
+				marker_new = Marker.objects.create(match=match, order=order, marker=img, lon=lon, lat=lat)
 
 			rs = {'success': True, 'msg': '新建比赛成功'}
 		else:
@@ -181,46 +181,73 @@ def match_new(req):
 
 #上传图片并返回图片地址
 def upload(request):
-    if request.method == "POST":
-        uf = UserForm(request.POST,request.FILES)
-        if uf.is_valid():
-            # username = uf.cleaned_data['username']
-            headImg = uf.cleaned_data['headImg']
-            test=Test()
-            # test.username=username
-            test.headImg=headImg
-            test.save()
-            rs={'success': True, 'msg': '上传成功！','mapurl':json.dumps(str(test.headImg))}
+	if request.method == "POST":
+		uf = UserForm(request.POST,request.FILES)
+		if uf.is_valid():
+			# username = uf.cleaned_data['username']
+			headImg = uf.cleaned_data['headImg']
+			test=Test()
+			# test.username=username
+			test.headImg=headImg
+			test.save()
+			rs={'success': True, 'msg': '上传成功！','mapurl':json.dumps(str(test.headImg))}
 			# rs=json.dump(rs)
-        else:
-            rs = {'success': True, 'msg': '上传失败！'}
-            # return HttpResponse('upload ok!')
-        return JsonResponse(rs)
-    else:
-        uf = UserForm()
-    return render_to_response('upload.html',{'uf':uf})
+		else:
+			rs = {'success': True, 'msg': '上传失败！'}
+			# return HttpResponse('upload ok!')
+		return JsonResponse(rs)
+	else:
+		uf = UserForm()
+	return render_to_response('upload.html',{'uf':uf})
 
 #获取比赛地图列表
 from django.core import serializers
 def matchlist(request):
-    if request.method == "POST":
-        uf = matchlistForm(request.POST)
-        if uf.is_valid():
-            num = uf.cleaned_data['num']
-            json_data = serializers.serialize("json",Match.objects.all().order_by("-uploadtime")[5*num:5*(num+1)-1:1])
-        return HttpResponse(json_data, content_type="application/json")
-    else:
-        uf = matchlistForm()
-    return render_to_response('matchlist.html', {'uf': uf}, context_instance=RequestContext(request))
+	if request.method == "POST":
+		uf = matchlistForm(request.POST)
+		if uf.is_valid():
+			num = uf.cleaned_data['num']
+			json_data = serializers.serialize("json",Match.objects.all().order_by("-uploadtime")[5*num:5*(num+1)-1:1])
+		return HttpResponse(json_data, content_type="application/json")
+	else:
+		uf = matchlistForm()
+	return render_to_response('matchlist.html', {'uf': uf}, context_instance=RequestContext(request))
 
 #获取房间列表
 def roomlist(request):
-    if request.method == "POST":
-        uf = roomlistForm(request.POST)
-        if uf.is_valid():
-            num = uf.cleaned_data['num']
-            json_data = serializers.serialize("json", Room.objects.all().order_by("-createtime")[5 * num:5 * (num + 1) - 1:1])
-        return HttpResponse(json_data, content_type="application/json")
-    else:
-        uf = roomlistForm()
-    return render_to_response('roomlist.html', {'uf': uf}, context_instance=RequestContext(request))
+	if request.method == "POST":
+		uf = roomlistForm(request.POST)
+		if uf.is_valid():
+			num = uf.cleaned_data['num']
+			json_data = serializers.serialize("json", Room.objects.all().order_by("-createtime")[5 * num:5 * (num + 1) - 1:1])
+		return HttpResponse(json_data, content_type="application/json")
+	else:
+		uf = roomlistForm()
+	return render_to_response('roomlist.html', {'uf': uf}, context_instance=RequestContext(request))
+
+#创建新的房间
+@check_login
+def room_new(req):
+	if req.method == "POST":
+		uf = RoomNewForm(req.POST)
+		if uf.is_valid():
+			email = req.session['email']
+			user = User.objects.get(email=email)
+
+			name = uf.cleaned_data['name']
+			match = uf.cleaned_data['match']
+			start = uf.cleaned_data['start']
+			end = uf.cleaned_data['end']
+			code = uf.cleaned_data['code']
+			detail = uf.cleaned_data['detail']
+
+			room = Room.objects.create(name=name, match=match, start=start, end=end, creatorid=user.id, creatorname=user.name, code=code, detail=detail)
+
+			rs = {'success': True, 'msg': '新建房间成功'}
+		else:
+			rs = {'success': False, 'msg': uf.errors}
+		return JsonResponse(rs)
+
+	else:
+		uf = RoomNewForm()
+	return render_to_response('test.html', {'uf': uf}, context_instance=RequestContext(req))

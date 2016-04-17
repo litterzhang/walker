@@ -33,7 +33,7 @@ class Match(models.Model):
 	#比赛地图创建者id，关联User表查询更多信息
 	creatorid = models.IntegerField()
 	#是否公开
-	ispubic = models.BooleanField()
+	ispublic = models.BooleanField()
 	place = models.CharField(max_length=50, default='比赛地点', editable=False)
 	#上传时间
 	uploadtime = models.TimeField(default=timezone.now, blank=True)
@@ -48,17 +48,17 @@ class Marker(models.Model):
 	order = models.IntegerField()
 	#经纬度
 	lon = models.FloatField()
-	lot = models.FloatField()
+	lat = models.FloatField()
 	
 
 #比赛房间表（选择比赛地图后创建房间）
 class Room(models.Model):
-	name = models.CharField(max_length=50, default='比赛房间', editable=False)
+	name = models.CharField(max_length=50, default='比赛房间')
 	#比赛地图id,关联比赛地图表查询更多信息
 	match = models.ForeignKey(Match)
 	#比赛房间创建者id,关联Room表查询更多信息
 	creatorid= models.IntegerField()
-	creatorname = models.CharField(max_length=50,default='xxx')
+	creatorname = models.CharField(max_length=50, default='越野用户')
 
 	#创建时间
 	createtime = models.TimeField(default=timezone.now)
@@ -66,21 +66,21 @@ class Room(models.Model):
 	code = models.IntegerField()
 	start = models.DateTimeField()
 	end = models.DateTimeField()
-	detail = models.CharField(max_length=200, default='暂无详情', editable=False)
+	detail = models.CharField(max_length=200, default='暂无详情')
 
 #比赛房间-用户-关联表
 class Room_User(models.Model):
 	#比赛房间id
 	room = models.ForeignKey(Room)
 	#参赛用户id
-	user = models.IntegerField(User)
+	user = models.ForeignKey(User)
 	#参赛用户成绩
-	score = models.IntegerField()
+	score = models.IntegerField(blank=True, default=0)
 	#比赛完成时间
-	start = models.DateTimeField()
-	end = models.DateTimeField()
+	start = models.DateTimeField(blank=True, null=True)
+	end = models.DateTimeField(blank=True, null=True)
 	#是否中途退出
-	isquit = models.BooleanField()
+	isquit = models.BooleanField(blank=True, default=True)
 
 #比赛房间-用户-标记点关联表
 class Room_User_Marker(models.Model):

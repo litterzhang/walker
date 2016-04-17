@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import EmailValidator, MinLengthValidator
 
-from .models import User
+from .models import User, Room
 
 class UserRegisterForm(ModelForm):
 	class Meta:
@@ -27,7 +27,7 @@ class UserLoginForm(forms.Form):
 class MatchNewForm(forms.Form):
 	name = forms.CharField(max_length=50, initial='比赛地图', required=False)
 	cover = forms.CharField(max_length=200, initial='xxx.jpg', required=False)
-	ispubic = forms.BooleanField(required=True)
+	ispublic = forms.BooleanField(required=True)
 	place = forms.CharField(max_length=50, initial='比赛地点', required=False)
 	json = forms.CharField(max_length=1000, initial='{}', required=False)
 
@@ -39,3 +39,14 @@ class matchlistForm(forms.Form):
 
 class roomlistForm(forms.Form):
 	num = forms.IntegerField()
+
+class RoomNewForm(ModelForm):
+	class Meta:
+		model = Room
+		fields = ['name', 'match', 'start', 'end', 'code', 'detail']
+
+		error_messages = {
+			'match': {
+				'required': _('邮箱已被注册！')
+			}
+		}

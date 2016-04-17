@@ -12,4 +12,5 @@ urlpatterns = [
 	url(r'^upload/$', views.upload, name='upload'),
 	url(r'^matchlist/$', views.matchlist, name='matchlist'),
 	url(r'^roomlist/$', views.roomlist, name='roomlist'),
+	url(r'^room_new/$', views.room_new, name='room_new'),
 ]
