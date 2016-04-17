@@ -91,7 +91,7 @@
 	参数：
 	num: 0代表返回前5个，1代表返回第5到9个，2代表返回10到14个
 	返回：
-	{name,cover,creatorid,ispubic,place,uploadtime  这些都是json里的参数}
+	{id,name,cover,creatorid,ispubic,place,uploadtime  这些都是json里的参数}
 	
 ### 比赛房间列表
 	HTTP POST
@@ -100,4 +100,4 @@
 	参数：
 	num: 0代表返回前5个，1代表返回第5到9个，2代表返回10到14个
 	返回：
-	{name,match,creatorid,creatorname,createtime,code,start,end,detail 这些都是json里的参数}
+	{id,name,match,creatorid,creatorname,createtime,code,start,end,detail 这些都是json里的参数}
