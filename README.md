@@ -87,20 +87,28 @@
 ### 比赛地图列表
 	HTTP POST
 	地址：
-	/app/matchlist
+	/app/match_list
+	说明:
+	cookies中包含email，否则为未登录，无法获取列表
 	参数：
-	num: 0代表返回前5个，1代表返回第5到9个，2代表返回10到14个
+	num: 0代表返回前5个，1代表返回第5到9个，2代表返回10到14个, 可不传，默认为0
+	me: bool True表示获取当前登录用户创建的比赛地图
 	返回：
 	{id,name,cover,creatorid,ispubic,place,uploadtime  这些都是json里的参数}
+	{'success': True/False, 'msg':'上传成功！/上传失败！', 'json': '比赛列表'}
 	
 ### 比赛房间列表
 	HTTP POST
 	地址：
-	/app/roomlist
+	/app/room_list
+	说明:
+	cookies中包含email，否则为未登录，无法获取列表
 	参数：
-	num: 0代表返回前5个，1代表返回第5到9个，2代表返回10到14个
+	num: 0代表返回前5个，1代表返回第5到9个，2代表返回10到14个，可不传，默认为0
+	me: bool True表示获取当前登录用户创建的房间
 	返回：
 	{id,name,match,creatorid,creatorname,createtime,code,start,end,detail 这些都是json里的参数}
+	{'success': True/False, 'msg':'上传成功！/上传失败！', 'json': '房间列表'}
 
 ### 新建房间
 	HTTP POST
@@ -129,3 +137,13 @@
 	'code': 邀请码
 	返回：
 	{'success': True/False, 'msg':'上传成功！/上传失败！'}
+
+### 加入过的房间列表
+	HTTP POST
+	地址：
+	/app/room_joined
+	说明:
+	cookies中包含email，否则为未登录，无法获取列表
+	参数：
+	返回：
+	{'success': True/False, 'msg':'上传成功！/上传失败！', 'json': '比赛房间列表'}

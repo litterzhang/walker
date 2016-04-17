@@ -34,11 +34,13 @@ class MatchNewForm(forms.Form):
 class UserForm(forms.Form):
     headImg = forms.FileField()
 
-class matchlistForm(forms.Form):
-	num = forms.IntegerField()
+class MatchListForm(forms.Form):
+	num = forms.IntegerField(required=False)
+	me = forms.BooleanField(required=False)
 
-class roomlistForm(forms.Form):
-	num = forms.IntegerField()
+class RoomListForm(forms.Form):
+	num = forms.IntegerField(required=False)
+	me = forms.BooleanField(required=False)
 
 class RoomNewForm(ModelForm):
 	class Meta:
@@ -60,7 +62,7 @@ class RoomJoinForm(forms.Form):
 		code_d = cleaned_data.get('code', -1)
 		room_id = cleaned_data.get('room', None)
 
-		if not room_id or not Room.objects.get(id=room_id):
+		if not room_id or not len(Room.objects.filter(id=room_id)):
 			self._errors['room'] = self.error_class([u'加入的房间不存在'])
 		else:
 			room_g = Room.objects.get(id=room_id)

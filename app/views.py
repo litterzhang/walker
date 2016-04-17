@@ -205,12 +205,20 @@ def upload(request):
 #获取比赛地图列表
 from django.core import serializers
 @check_login
-def matchlist(request):
-	if request.method == "POST":
-		uf = matchlistForm(request.POST)
+def match_list(req):
+	if req.method == "POST":
+		uf = MatchListForm(req.POST)
 		if uf.is_valid():
-			num = uf.cleaned_data['num']
-			matchs = Match.objects.all().order_by('-uploadtime')[5*num:5*(num+1)-1:1]
+			email = req.session['email']
+			user = User.objects.get(email=email)
+
+			num = uf.cleaned_data.get('num', 0)
+			me = uf.cleaned_data.get('me', False)
+
+			if not me:
+				matchs = Match.objects.filter().order_by('-uploadtime')[5*num:5*(num+1)-1:1]
+			else:
+				matchs = Match.objects.filter(creatorid=user.id).order_by('-uploadtime')
 			
 			matchs_r = list()
 			for match in matchs:
@@ -227,20 +235,38 @@ def matchlist(request):
 			rs = {'success': True, 'msg': uf.errors}
 		return JsonResponse(rs)
 	else:
-		uf = matchlistForm()
-	return render_to_response('matchlist.html', {'uf': uf}, context_instance=RequestContext(request))
+		uf = MatchListForm()
+	return render_to_response('test.html', {'uf': uf}, context_instance=RequestContext(req))
 
 #获取房间列表
-def roomlist(request):
-	if request.method == "POST":
-		uf = roomlistForm(request.POST)
+def room_list(req):
+	if req.method == 'POST':
+		uf = RoomListForm(req.POST)
 		if uf.is_valid():
-			num = uf.cleaned_data['num']
-			json_data = serializers.serialize("json", Room.objects.all().order_by("-createtime")[5 * num:5 * (num + 1) - 1:1])
-		return HttpResponse(json_data, content_type="application/json")
+			email = req.session['email']
+			user = User.objects.get(email=email)
+
+			num = uf.cleaned_data.get('num', 0)
+			me = uf.cleaned_data.get('me', False)
+
+			if not me:
+				rooms = Room.objects.filter().order_by('-createtime')[5*num:5*(num+1)-1:1]
+			else:
+				rooms = Room.objects.filter(creatorid=user.id).order_by('-createtime')
+
+			rooms_r = list()
+			for room in rooms:
+				room_r = {'id': room.id, 'name': room.name, 'creatorid': room.creatorid, 'creatorname': room.creatorname, 'start': room.start, 'end': room.end, 'detail': room.detail}
+				rooms_r.append(room_r)
+
+			rs = {'success': True, 'msg': '获取成功!', 'json': rooms_r}
+		else:
+			rs = {'success': True, 'msg': uf.errors}
+		return JsonResponse(rs)
+
 	else:
-		uf = roomlistForm()
-	return render_to_response('roomlist.html', {'uf': uf}, context_instance=RequestContext(request))
+		uf = RoomListForm()
+	return render_to_response('test.html', {'uf': uf}, context_instance=RequestContext(req))
 
 #创建新的房间
 @check_login
@@ -294,3 +320,21 @@ def room_join(req):
 	else:
 		uf = RoomJoinForm()
 	return render_to_response('test.html', {'uf': uf}, context_instance=RequestContext(req))
+
+#参加过的比赛房间
+@check_login
+def room_joined(req):
+	email = req.session['email']
+	user = User.objects.get(email=email)
+
+	room_users = Room_User.objects.filter(user=user)
+	rooms = [room_user.room for room_user in room_users]
+
+
+	rooms_r = list()
+	for room in rooms:
+		room_r = {'id': room.id, 'name': room.name, 'creatorid': room.creatorid, 'creatorname': room.creatorname, 'start': room.start, 'end': room.end, 'detail': room.detail}
+		rooms_r.append(room_r)
+
+	rs = {'success': True, 'msg': '获取成功!', 'json': rooms_r}
+	return JsonResponse(rs)
