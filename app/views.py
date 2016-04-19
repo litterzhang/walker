@@ -203,7 +203,6 @@ def upload(request):
 	return render_to_response('upload.html',{'uf':uf})
 
 #获取比赛地图列表
-from django.core import serializers
 @check_login
 def match_list(req):
 	if req.method == "POST":
@@ -227,7 +226,7 @@ def match_list(req):
 
 				markers_r = list()
 				for marker in markers:
-					markers_r.append({'id': marker.id, 'order': marker.order, 'lon': marker.lon, 'lat': marker.lat, 'marker': marker.marker})
+					markers_r.append({'name': marker.name, 'detail': marker.detail, 'id': marker.id, 'order': marker.order, 'lon': marker.lon, 'lat': marker.lat, 'marker': marker.marker})
 				match_r['markers'] = markers_r
 				matchs_r.append(match_r)
 			rs = {'success': True, 'msg': '获取成功!', 'json': matchs_r}
@@ -239,6 +238,7 @@ def match_list(req):
 	return render_to_response('test.html', {'uf': uf}, context_instance=RequestContext(req))
 
 #获取房间列表
+@check_login
 def room_list(req):
 	if req.method == 'POST':
 		uf = RoomListForm(req.POST)
